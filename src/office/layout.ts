@@ -51,7 +51,7 @@ export function getFloorColor(col: number, row: number): string {
 export function buildFurnitureLayout(agentCount: number): FurnitureItem[] {
   const items: FurnitureItem[] = [];
 
-  // --- Agent desks (up to 6) ---
+  // --- Agent desks (up to 8) ---
   const deskPositions = [
     { col: 3, row: 3 },
     { col: 3, row: 6 },
@@ -59,6 +59,8 @@ export function buildFurnitureLayout(agentCount: number): FurnitureItem[] {
     { col: 7, row: 3 },
     { col: 7, row: 6 },
     { col: 7, row: 9 },
+    { col: 3, row: 12 },
+    { col: 7, row: 12 },
   ];
   const chairPositions = [
     { col: 4, row: 3 },
@@ -67,9 +69,11 @@ export function buildFurnitureLayout(agentCount: number): FurnitureItem[] {
     { col: 8, row: 3 },
     { col: 8, row: 6 },
     { col: 8, row: 9 },
+    { col: 4, row: 12 },
+    { col: 8, row: 12 },
   ];
 
-  for (let i = 0; i < Math.min(agentCount, 6); i++) {
+  for (let i = 0; i < Math.min(agentCount, 8); i++) {
     items.push({ type: 'desk', ...deskPositions[i] });
     items.push({ type: 'chair', ...chairPositions[i] });
   }

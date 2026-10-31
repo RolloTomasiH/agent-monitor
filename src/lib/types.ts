@@ -47,7 +47,7 @@ export type AgentState =
 
 /** Office zone identifiers */
 export type ZoneId =
-  | 'desk_0' | 'desk_1' | 'desk_2' | 'desk_3' | 'desk_4' | 'desk_5'
+  | 'desk_0' | 'desk_1' | 'desk_2' | 'desk_3' | 'desk_4' | 'desk_5' | 'desk_6' | 'desk_7'
   | 'boss_office'
   | 'break_room'
   | 'meeting_room'

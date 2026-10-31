@@ -42,15 +42,20 @@ export const DEFAULT_GATEWAY: GatewayConfig = {
 };
 
 export const DEFAULT_OWNER: OwnerConfig = {
-  name: 'Boss',
-  emoji: '👔',
+  name: '拓麻歌子 (Boss)',
+  emoji: '👑',
   avatar: 'boss',
 };
 
 export const DEFAULT_AGENTS: AgentConfig[] = [
-  { id: 'main', name: 'Claude', emoji: '⚡', color: '#4FC3F7', avatar: 'glasses' },
-  { id: 'agent-2', name: 'GPT', emoji: '🔥', color: '#FF7043', avatar: 'hoodie' },
-  { id: 'agent-3', name: 'Gemini', emoji: '🌟', color: '#66BB6A', avatar: 'suit' },
+  { id: 'bench_alpha', name: '老陆 · 稳健PM', emoji: '🛡️', color: '#16A34A', avatar: 'suit' },
+  { id: 'pool_active', name: '雷蒙 · 进攻PM', emoji: '⚡', color: '#EA580C', avatar: 'superhero' },
+  { id: 'tech_manufacturing', name: '林工 · 硬科技', emoji: '🔬', color: '#0284C7', avatar: 'glasses' },
+  { id: 'macro', name: '周师 · 宏观周期', emoji: '🌊', color: '#2563EB', avatar: 'wizard' },
+  { id: 'cyclical_finance', name: '严谨派 · 大周期', emoji: '⛏️', color: '#D97706', avatar: 'casual' },
+  { id: 'risk_director', name: '冷面判官 · 风控', emoji: '⚖️', color: '#DC2626', avatar: 'suit' },
+  { id: 'quant_lead', name: '高斯 · 量化实证', emoji: '📐', color: '#7C3AED', avatar: 'robot' },
+  { id: 'investment_assistant', name: '小程 · 投研助理', emoji: '📋', color: '#0D9488', avatar: 'glasses' },
 ];
 
 export const DEFAULT_CONFIG: DashboardConfig = {
@@ -59,7 +64,7 @@ export const DEFAULT_CONFIG: DashboardConfig = {
   gateway: DEFAULT_GATEWAY,
   theme: 'default',
   connected: false,
-  demoMode: false,
+  demoMode: true,
 };
 
 // ---------------------------------------------------------------------------

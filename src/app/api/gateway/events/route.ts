@@ -1,115 +1,72 @@
-// ============================================================================
-// /api/gateway/events — SSE endpoint for real-time session state updates
-//
-// Opens a long-lived HTTP response with Content-Type: text/event-stream.
-// Subscribes to the GatewayConnection singleton and pushes state changes
-// for individual sessions as they happen. The browser connects via
-// EventSource and patches React state without polling.
-//
-// Event format (one per state change):
-//   event: state
-//   data: {"sessionKey":"agent:main:main","chatStatus":"delta",...,"behavior":"working"}
-//
-// A heartbeat comment is sent every 30s to keep the connection alive through
-// proxies/load balancers.
-// ============================================================================
-
-import {
-  getGatewayConnection,
-  readOpenClawConfig,
-  type SessionLiveState,
-} from '@/lib/gateway-connection';
-import {
-  executionStateToBehavior,
-  getToolSnapshot,
-  summarizeExecution,
-} from '@/lib/state-mapper';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  if (!readOpenClawConfig()) {
-    return new Response('OpenClaw config not found', { status: 500 });
+function parseRunsLog() {
+  const logPath = join(process.env.HOME || process.env.USERPROFILE || '', 'agent-team', 'data', 'logs', 'runs.log');
+  if (!existsSync(logPath)) return [];
+  const content = readFileSync(logPath, 'utf-8');
+  const lines = content.trim().split('\n').slice(-100);
+  
+  const agentsMap = new Map();
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const match = line.match(/^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s+\[(.*?)\]\s+(start|ok|error|fail)\s*(.*)/);
+    if (match) {
+      const [_, timestamp, agentId, status, details] = match;
+      let behavior = 'idle';
+      if (status === 'start') behavior = 'working';
+      if (status === 'error' || status === 'fail') behavior = 'error';
+      
+      agentsMap.set(agentId, {
+        sessionKey: `agent:${agentId}`,
+        behavior: behavior,
+        agentName: agentId.split('/').pop().replace(/_/g, ' '),
+        statusSummary: details
+      });
+    }
   }
+  return Array.from(agentsMap.values());
+}
 
-  const gw = getGatewayConnection();
-
-  // Cleanup function — set in start(), called in cancel()
-  let cleanup: (() => void) | null = null;
-
+export async function GET() {
   const stream = new ReadableStream({
     start(controller) {
       const encoder = new TextEncoder();
-
-      /** Send an SSE event to the client. */
+      
       function send(event: string, data: string) {
         try {
           controller.enqueue(encoder.encode(`event: ${event}\ndata: ${data}\n\n`));
-        } catch {
-          // Stream already closed
-        }
+        } catch {}
       }
-
-      /** Subscriber callback — fired for each individual session state change. */
-      function onStateChange(sessionKey: string, state: SessionLiveState) {
+      
+      send('open', JSON.stringify({ ts: Date.now(), ready: true }));
+      
+      let lastStates = '';
+      const interval = setInterval(() => {
         try {
-          const behavior = executionStateToBehavior(state, undefined);
-          const agentName = state.agent?.identity?.name ?? state.agent?.name ?? null;
-          const emoji = state.agent?.identity?.emoji ?? null;
-          const { toolName, toolPhase } = getToolSnapshot(state.agentEventData);
-
-          send('state', JSON.stringify({
-            sessionKey,
-            chatStatus: state.chatStatus,
-            agentStatus: state.agentStatus,
-            agentEventData: state.agentEventData,
-            behavior,
-            agentName,
-            emoji,
-            toolName,
-            toolPhase,
-            statusSummary: summarizeExecution({
-              behavior,
-              agentStatus: state.agentStatus,
-              chatStatus: state.chatStatus,
-              agentEventData: state.agentEventData,
-              isSubagent: sessionKey.includes('subagent'),
-            }),
-            lastRunId: state.lastRunId ?? null,
-          }));
-        } catch {
-          // Don't let serialization errors kill the stream
-        }
-      }
-
-      // Subscribe to gateway state changes
-      gw.subscribe(onStateChange);
-
-      // Heartbeat every 30s — SSE comment (lines starting with ':')
+          const currentStates = parseRunsLog();
+          const currentStr = JSON.stringify(currentStates);
+          if (currentStr !== lastStates) {
+            for (const state of currentStates) {
+              send('state', JSON.stringify(state));
+            }
+            lastStates = currentStr;
+          }
+        } catch (err) {}
+      }, 1000);
+      
       const heartbeat = setInterval(() => {
         try {
           controller.enqueue(encoder.encode(': heartbeat\n\n'));
         } catch {
-          // Stream closed — clean up
+          clearInterval(interval);
           clearInterval(heartbeat);
-          gw.unsubscribe(onStateChange);
         }
-      }, 30_000);
-
-      // Send initial "open" event so the client knows the connection is live
-      send('open', JSON.stringify({ ts: Date.now(), ready: gw.isReady }));
-
-      // Register cleanup for cancel()
-      cleanup = () => {
-        gw.unsubscribe(onStateChange);
-        clearInterval(heartbeat);
-      };
+      }, 30000);
     },
-
-    cancel() {
-      // Called when the client disconnects
-      if (cleanup) cleanup();
-    },
+    cancel() {}
   });
 
   return new Response(stream, {
@@ -117,7 +74,6 @@ export async function GET() {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
       'Connection': 'keep-alive',
-      'X-Accel-Buffering': 'no', // disable nginx buffering
     },
   });
 }

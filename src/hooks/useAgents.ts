@@ -75,9 +75,14 @@ const AGENT_COLORS = ['#4FC3F7', '#66BB6A', '#FFCA28', '#AB47BC', '#EF5350', '#F
 const AGENT_EMOJIS = ['⚡', '🔥', '🌟', '🎯', '🚀', '🧠'];
 
 const DEMO_AGENTS: AgentConfig[] = [
-  { id: 'demo-1', name: 'Atlas', emoji: '🔥', color: '#4FC3F7', avatar: 'glasses' },
-  { id: 'demo-2', name: 'Nova', emoji: '✨', color: '#66BB6A', avatar: 'hoodie' },
-  { id: 'demo-3', name: 'Spark', emoji: '⚡', color: '#FFCA28', avatar: 'robot' },
+  { id: 'bench_alpha', name: '老陆 · 稳健PM', emoji: '🛡️', color: '#16A34A', avatar: 'suit' },
+  { id: 'pool_active', name: '雷蒙 · 进攻PM', emoji: '⚡', color: '#EA580C', avatar: 'superhero' },
+  { id: 'tech_manufacturing', name: '林工 · 硬科技', emoji: '🔬', color: '#0284C7', avatar: 'glasses' },
+  { id: 'macro', name: '周师 · 宏观周期', emoji: '🌊', color: '#2563EB', avatar: 'wizard' },
+  { id: 'cyclical_finance', name: '严谨派 · 大周期', emoji: '⛏️', color: '#D97706', avatar: 'casual' },
+  { id: 'risk_director', name: '冷面判官 · 风控', emoji: '⚖️', color: '#DC2626', avatar: 'suit' },
+  { id: 'quant_lead', name: '高斯 · 量化实证', emoji: '📐', color: '#7C3AED', avatar: 'robot' },
+  { id: 'investment_assistant', name: '小程 · 投研助理', emoji: '📋', color: '#0D9488', avatar: 'glasses' },
 ];
 
 function createDisconnectedStats(): SystemStats {

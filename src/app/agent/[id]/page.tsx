@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useAgents } from '@/hooks/useAgents';
+import Navbar from '@/components/dashboard/Navbar';
 import AgentDetail from '@/components/agent/AgentDetail';
 import TokenUsage from '@/components/agent/TokenUsage';
 import TaskList from '@/components/agent/TaskList';
@@ -15,7 +17,7 @@ export default function AgentPage() {
   const agentId = params.id as string;
   const [showChat, setShowChat] = useState(false);
 
-  const { agents, agentStates, chatMessages, sendChat, loadChatHistory } = useAgents();
+  const { agents, agentStates, chatMessages, sendChat, loadChatHistory, connected, demoMode } = useAgents();
 
   const agent = agents.find((entry) => entry.id === agentId);
   const state = agentStates[agentId];
@@ -26,28 +28,35 @@ export default function AgentPage() {
         <div className="text-center">
           <div className="text-4xl mb-4">?</div>
           <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Agent not found</div>
-          <button
-            onClick={() => router.push('/')}
-            className="mt-4 px-4 py-2 rounded-xl text-sm"
+          <Link
+            href="/"
+            className="mt-4 inline-block px-4 py-2 rounded-xl text-sm font-mono"
             style={{ backgroundColor: 'var(--accent-primary)', color: '#000' }}
           >
-            Back to Dashboard
-          </button>
+            ← 返回仪表盘 (Back to Dashboard)
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <button
-          onClick={() => router.push('/')}
-          className="text-sm transition-colors hover:opacity-80"
-          style={{ color: 'var(--text-secondary)' }}
+    <div className="min-h-screen bg-[var(--bg-primary)] pb-12">
+      <Navbar connected={connected} demoMode={demoMode} onSettingsClick={() => {}} />
+
+      <div className="max-w-4xl mx-auto space-y-6 px-4 pt-20">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono transition-all hover:scale-105 shadow-sm"
+          style={{
+            backgroundColor: 'var(--bg-secondary)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border)'
+          }}
         >
-          Back to Dashboard
-        </button>
+          <span>←</span>
+          <span>返回总览 (Back to Dashboard)</span>
+        </Link>
 
         <AgentDetail agent={agent} state={state} onChatClick={() => setShowChat(true)} />
 

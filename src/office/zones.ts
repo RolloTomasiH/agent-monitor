@@ -15,6 +15,8 @@ export const ZONES_TEMPLATE: Record<ZoneId, Omit<Zone, 'id'>> = {
   desk_3: { label: 'Desk 3', emoji: '🖥️', center: { col: 8, row: 3 }, minCol: 6, maxCol: 9, minRow: 2, maxRow: 4 },
   desk_4: { label: 'Desk 4', emoji: '🖥️', center: { col: 8, row: 6 }, minCol: 6, maxCol: 9, minRow: 5, maxRow: 7 },
   desk_5: { label: 'Desk 5', emoji: '🖥️', center: { col: 8, row: 9 }, minCol: 6, maxCol: 9, minRow: 8, maxRow: 10 },
+  desk_6: { label: 'Desk 6', emoji: '🖥️', center: { col: 4, row: 12 }, minCol: 2, maxCol: 5, minRow: 11, maxRow: 13 },
+  desk_7: { label: 'Desk 7', emoji: '🖥️', center: { col: 8, row: 12 }, minCol: 6, maxCol: 9, minRow: 11, maxRow: 13 },
   boss_office: { label: 'Boss Office', emoji: '👔', center: { col: 14, row: 3 }, minCol: 12, maxCol: 16, minRow: 1, maxRow: 4 },
   break_room: { label: 'Break Room', emoji: '☕', center: { col: 20, row: 3 }, minCol: 18, maxCol: 22, minRow: 1, maxRow: 5 },
   meeting_room: { label: 'Meeting Room', emoji: '🤝', center: { col: 14, row: 7 }, minCol: 12, maxCol: 16, minRow: 6, maxRow: 9 },

@@ -39,7 +39,7 @@ const DEFAULT_AUTOWORK: AutoworkConfig = {
   policies: {},
 };
 
-type DashboardTab = 'overview' | 'achievements' | 'leaderboard' | 'metrics';
+type DashboardTab = 'overview' | 'office' | 'achievements' | 'leaderboard' | 'metrics';
 
 export default function DashboardPage() {
   const [showSettings, setShowSettings] = useState(false);
@@ -262,6 +262,28 @@ export default function DashboardPage() {
             />
           </div>
         );
+      case 'office':
+        return (
+          <div className="rounded-2xl p-4 overflow-hidden mb-6" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-pixel text-sm flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+                <span>🏢</span>
+                <span>全景办公室视图 (Full Office View)</span>
+              </h2>
+              <button
+                onClick={() => setActiveTab('overview')}
+                className="text-xs font-mono px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors flex items-center gap-1.5"
+                style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+              >
+                <span>←</span>
+                <span>返回概览仪表盘 (Overview)</span>
+              </button>
+            </div>
+            <div className="flex items-center justify-center overflow-auto rounded-xl p-2" style={{ backgroundColor: 'var(--bg-primary)' }}>
+              <MiniOffice agents={displayAgents} agentStates={agentStates} ownerConfig={ownerConfig} theme={theme} />
+            </div>
+          </div>
+        );
       case 'metrics':
         return (
           <MetricsDashboard
@@ -353,6 +375,7 @@ export default function DashboardPage() {
         {/* TAB NAVIGATION */}
         <div className="flex gap-2 mb-6 overflow-x-auto">
           <button onClick={() => setActiveTab('overview')} className={`px-4 py-2 rounded-lg font-mono text-sm transition-all ${activeTab === 'overview' ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-white/10'}`}>📊 Overview</button>
+          <button onClick={() => setActiveTab('office')} className={`px-4 py-2 rounded-lg font-mono text-sm transition-all ${activeTab === 'office' ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-white/10'}`}>🏢 Office View</button>
           <button onClick={() => setActiveTab('achievements')} className={`px-4 py-2 rounded-lg font-mono text-sm transition-all ${activeTab === 'achievements' ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-white/10'}`}>🏆 Achievements ({achievementState.unlockedCount}/{achievementState.achievements.length})</button>
           <button onClick={() => setActiveTab('leaderboard')} className={`px-4 py-2 rounded-lg font-mono text-sm transition-all ${activeTab === 'leaderboard' ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-white/10'}`}>🏅 Leaderboard</button>
           <button onClick={() => setActiveTab('metrics')} className={`px-4 py-2 rounded-lg font-mono text-sm transition-all ${activeTab === 'metrics' ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-white/10'}`}>📈 Metrics</button>
